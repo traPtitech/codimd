@@ -89,6 +89,7 @@
     "passport.socketio": "~3.7.0",
     "pg": "~6.1.2",
     "pg-hstore": "~2.3.2",
+    "pkgcloud": "^2.1.0",
     "prom-client": "^12.0.0",
     "prometheus-api-metrics": "^2.2.5",
     "randomcolor": "~0.5.4",
