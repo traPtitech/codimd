@@ -62,7 +62,7 @@ export function updateLastChange () {
     }
     const time = window.lastchangetime || window.createtime
     window.lastchangeui.time.html(moment(time).fromNow())
-    window.lastchangeui.time.attr('title', moment(time).format('llll'))
+    window.lastchangeui.time.attr('title', moment(time).format('YYYY/MM/DD(ddd) HH:mm:ss'))
   }
 }
 setInterval(updateLastChange, 60000)
