@@ -8,6 +8,11 @@
                 <h4 class="modal-title" id="mySmallModalLabel"><%= __('Choose method') %></h4>
             </div>
             <div class="modal-body" style="text-align: center;">
+                <% if (authProviders.trap) { %>
+                <a href="<%- serverURL %>/auth/trap" class="btn btn-lg btn-block btn-social btn-facebook">
+                    <i class="fa fa-user-circle"></i> <%= __('Sign in via %s', 'traP ID') %>
+                </a>
+                <% } %>
                 <% if (authProviders.facebook) { %>
                 <a href="<%- serverURL %>/auth/facebook" class="btn btn-lg btn-block btn-social btn-facebook">
                     <i class="fa fa-facebook"></i> <%= __('Sign in via %s', 'Facebook') %>
