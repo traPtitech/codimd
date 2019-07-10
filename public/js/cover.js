@@ -114,6 +114,13 @@ $('.ui-history').click(() => {
   }
 })
 
+$('.ui-notes').click(() => {
+  if (!$('#notes').is(':visible')) {
+    $('.section:visible').hide()
+    $('#notes').fadeIn()
+  }
+})
+
 function checkHistoryList () {
   if ($('#history-list').children().length > 0) {
     $('.pagination').show()
@@ -428,3 +435,46 @@ $('.ui-use-tags').on('change', function () {
 $('.search').keyup(() => {
   checkHistoryList()
 })
+
+const notes = new List('notes', {
+  valueNames: ['id', 'text', 'fromNow', 'timestamp', 'time'],
+  item: '<li class="col-xs-12 col-sm-6 col-md-6 col-lg-4">' +
+    '<span class="id" style="display:none;"></span>' +
+    '<a href="#">' +
+    '<div class="item">' +
+    '<div class="content">' +
+    '<h4 class="text"></h4>' +
+    '<p>' +
+    '<i><i class="fa fa-clock-o"></i> updated </i><i class="fromNow"></i>' +
+    '<i class="timestamp" style="display:none;"></i>' +
+    '<br>' +
+    '<i class="time"></i>' +
+    '</p>' +
+    '</div>' +
+    '</div>' +
+    '</a>' +
+    '</li>',
+  page: 18,
+  pagination: [{
+    outerWindow: 1
+  }]
+})
+
+notes.on('updated', e => {
+  for (let item of e.items) {
+    if (item.visible()) {
+      $(item.elm).find('a').attr('href', `${serverurl}/${item._values.id}`)
+    }
+  }
+})
+
+$('.ui-refresh-notes').click(() => {
+  $.get(`${serverurl}/notes`).then(data => {
+    notes.clear()
+    notes.add(data.notes.map(item => {
+      item.fromNow = moment(item.timestamp).fromNow()
+      item.time = moment(item.timestamp).format('YYYY/MM/DD(ddd) HH:mm:ss')
+      return item
+    }))
+  })
+}).click()
