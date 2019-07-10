@@ -11,6 +11,8 @@
                             </li>
                             <li class="ui-history<% if(signin) { %> active<% } %>"><a href="#"><%= __('History') %></a>
                             </li>
+                            <li class="ui-notes<% if(signin) { %> active<% } %>"><a href="#">全てのノート</a>
+                            </li>
                             <div class="ui-signin" style="float: right; margin-top: 8px;<% if(signin) { %> display: none;<% } %>">
                                 <% if (allowAnonymous) { %>
                                 <a type="button" href="<%- serverURL %>/new" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> <%= __('New guest note') %></a>
@@ -112,6 +114,29 @@
                     <a href="#" class="btn btn-default ui-clear-history" title="<%= __('Clear history') %>" data-toggle="modal" data-target=".delete-history-modal"><i class="fa fa-trash-o"></i></a>
                     </span>
                     <a href="#" class="btn btn-default ui-refresh-history" title="<%= __('Refresh history') %>"><i class="fa fa-refresh"></i></a>
+                </form>
+                <h4 class="ui-nohistory" style="display:none;">
+                    <%= __('No history') %>
+                </h4>
+                <a href="#" class="btn btn-primary ui-import-from-browser" style="display:none;"><%= __('Import from browser') %></a>
+                <ul id="history-list" class="list">
+                </ul>
+                <ul class="pagination"></ul>
+            </div>
+
+            <div id="notes" class="section" style="display:none;">
+                <br>
+                <form class="form-inline">
+                    <div class="form-group">
+                        <input class="search form-control" placeholder="<%= __('Search keyword...') %>" />
+                    </div>
+                    <a href="#" class="sort btn btn-default" data-sort="text" title="<%= __('Sort by title') %>">
+                    <%= __('Title') %>
+                    </a>
+                    <a href="#" class="sort btn btn-default" data-sort="timestamp" title="<%= __('Sort by time') %>">
+                    <%= __('Time') %>
+                    </a>
+                    <a href="#" class="btn btn-default ui-refresh-notes" title="<%= __('Refresh history') %>"><i class="fa fa-refresh"></i></a>
                 </form>
                 <h4 class="ui-nohistory" style="display:none;">
                     <%= __('No history') %>
