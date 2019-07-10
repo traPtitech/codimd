@@ -392,3 +392,7 @@ small .dropdown a:focus, small .dropdown a:hover {
         font-size: 12px !important;
     }
 }
+
+.katex-mathml {
+  display: none;
+}

@@ -19,6 +19,7 @@ import markdownitContainer from 'markdown-it-container'
 /* Defined regex markdown it plugins */
 import Plugin from 'markdown-it-regexp'
 
+require('katex/dist/katex.css')
 require('prismjs/themes/prism.css')
 require('prismjs/components/prism-wiki')
 require('prismjs/components/prism-haskell')
@@ -529,19 +530,6 @@ export function finishView (view) {
         else langDiv.html(result.value)
       }
     })
-    // mathjax
-  const mathjaxdivs = view.find('span.mathjax.raw').removeClass('raw').toArray()
-  try {
-    if (mathjaxdivs.length > 1) {
-      window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub, mathjaxdivs])
-      window.MathJax.Hub.Queue(window.viewAjaxCallback)
-    } else if (mathjaxdivs.length > 0) {
-      window.MathJax.Hub.Queue(['Typeset', window.MathJax.Hub, mathjaxdivs[0]])
-      window.MathJax.Hub.Queue(window.viewAjaxCallback)
-    }
-  } catch (err) {
-    console.warn(err)
-  }
   // render title
   document.title = renderTitle(view)
 }
@@ -961,14 +949,7 @@ md.use(require('markdown-it-mark'))
 md.use(require('markdown-it-ins'))
 md.use(require('markdown-it-sub'))
 md.use(require('markdown-it-sup'))
-md.use(require('markdown-it-mathjax')({
-  beforeMath: '<span class="mathjax raw">',
-  afterMath: '</span>',
-  beforeInlineMath: '<span class="mathjax raw">\\(',
-  afterInlineMath: '\\)</span>',
-  beforeDisplayMath: '<span class="mathjax raw">\\[',
-  afterDisplayMath: '\\]</span>'
-}))
+md.use(require('markdown-it-katex'))
 md.use(require('markdown-it-imsize'))
 
 md.use(require('markdown-it-emoji'), {
