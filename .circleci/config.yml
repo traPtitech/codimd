@@ -1,0 +1,34 @@
+version: 2.1
+
+jobs:
+  build-image:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: install utils
+          command: npm install --global semver
+      - run:
+          name: docker login
+          command: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run:
+          name: docker build and push
+          command: |
+            if [ "$CIRCLE_BRANCH" = "traP" ]; then
+              IMAGE_TAG="latest"
+            else
+              IMAGE_TAG="$CIRCLE_BRANCH"
+            fi
+            docker build -t trap/$CIRCLE_PROJECT_REPONAME:$IMAGE_TAG -f ./deployments/Dockerfile .
+            docker push trap/$CIRCLE_PROJECT_REPONAME:$IMAGE_TAG
+
+workflows:
+  version: 2
+  main:
+    jobs:
+      - build-image:
+          filters:
+            branches:
+              only:
+                - traP
+                - /traP-.*/
