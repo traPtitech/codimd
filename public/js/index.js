@@ -212,7 +212,7 @@ const supportExtraTags = [
     text: '[time tag]',
     search: '[]',
     command: function () {
-      return '[time=' + moment().format('llll') + ']'
+      return '[time=' + moment().format('YYYY/MM/DD(ddd) HH:mm:ss') + ']'
     }
   },
   {
@@ -1123,7 +1123,7 @@ function parseRevisions (_revisions) {
       item.attr('data-revision-time', revision.time)
       if (lastRevision === revision.time) item.addClass('active')
       var itemHeading = $('<h5 class="list-group-item-heading"></h5>')
-      itemHeading.html('<i class="fa fa-clock-o"></i> ' + moment(revision.time).format('llll'))
+      itemHeading.html('<i class="fa fa-clock-o"></i> ' + moment(revision.time).format('YYYY/MM/DD(ddd) HH:mm:ss'))
       var itemText = $('<p class="list-group-item-text"></p>')
       itemText.html('<i class="fa fa-file-text"></i> Length: ' + revision.length)
       item.append(itemHeading).append(itemText)

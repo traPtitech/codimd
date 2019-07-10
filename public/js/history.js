@@ -271,7 +271,7 @@ function parseToHistory (list, notehistory, callback) {
       const timestamp = (typeof notehistory[i].time === 'number' ? moment(notehistory[i].time) : moment(notehistory[i].time, 'MMMM Do YYYY, h:mm:ss a'))
       notehistory[i].timestamp = timestamp.valueOf()
       notehistory[i].fromNow = timestamp.fromNow()
-      notehistory[i].time = timestamp.format('llll')
+      notehistory[i].time = timestamp.format('YYYY/MM/DD(ddd) HH:mm:ss')
       // prevent XSS
       notehistory[i].text = escapeHTML(notehistory[i].text)
       notehistory[i].tags = (notehistory[i].tags && notehistory[i].tags.length > 0) ? escapeHTML(notehistory[i].tags).split(',') : []
