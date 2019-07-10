@@ -25,6 +25,9 @@
     "start": "sequelize db:migrate && node app.js",
     "test": "npm run-script eslint && npm run-script jsonlint && mocha"
   },
+  "resolutions": {
+    "katex": "^0.10.0-beta"
+  },
   "dependencies": {
     "@hackmd/codemirror": "^5.46.2",
     "@hackmd/diff-match-patch": "~1.1.1",
@@ -50,6 +53,7 @@
     "cookie": "~0.3.1",
     "cookie-parser": "~1.4.3",
     "deep-freeze": "~0.0.1",
+    "dompurify": "^1.0.11",
     "ejs": "~2.5.5",
     "emojify.js": "~1.1.0",
     "express": "~4.16.4",
@@ -84,6 +88,7 @@
     "markdown-it-footnote": "~3.0.1",
     "markdown-it-imsize": "~2.0.1",
     "markdown-it-ins": "~2.0.0",
+    "markdown-it-katex": "^2.0.3",
     "markdown-it-mark": "~2.0.0",
     "markdown-it-mathjax": "~2.0.0",
     "markdown-it-regexp": "~0.4.0",
