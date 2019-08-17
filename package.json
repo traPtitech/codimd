@@ -15,7 +15,7 @@
   "license": "AGPL-3.0",
   "main": "app.js",
   "scripts": {
-    "build": "webpack --config webpack.prod.js --progress --colors --bail",
+    "build": "webpack --config webpack.prod.js --display errors-only -p",
     "dev": "webpack --config webpack.dev.js --progress --colors --watch",
     "doctoc": "doctoc --title='# Table of Contents' README.md",
     "lint": "standard",
@@ -26,8 +26,7 @@
     "coverage": "nyc mocha --require intelli-espower-loader --exit --recursive ./test",
     "coverage:ci": "nyc mocha --no-color -R dot --require intelli-espower-loader --exit --recursive ./test",
     "test": "npm run-script lint && npm run-script jsonlint && npm run-script coverage",
-    "test:ci": "npm run-script lint && npm run-script jsonlint && npm run-script coverage:ci",
-    "postinstall": "bin/heroku"
+    "test:ci": "npm run-script lint && npm run-script jsonlint && npm run-script coverage:ci"
   },
   "dependencies": {
     "@hackmd/codemirror": "~5.46.2",
