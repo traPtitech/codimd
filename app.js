@@ -191,6 +191,7 @@ app.locals.allowAnonymousEdits = config.allowAnonymousEdits
 app.locals.permission = config.permission
 app.locals.allowPDFExport = config.allowPDFExport
 app.locals.authProviders = {
+  trap: config.isTrapEnable,
   facebook: config.isFacebookEnable,
   twitter: config.isTwitterEnable,
   github: config.isGitHubEnable,
