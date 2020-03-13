@@ -3,6 +3,7 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const BrotliPlugin = require("brotli-webpack-plugin")
 
 // Fix possible nofile-issues
 const fs = require('fs')
@@ -187,7 +188,13 @@ module.exports = {
         to: 'leaflet'
       }
     ]),
-    new MiniCssExtractPlugin()
+    new MiniCssExtractPlugin(),
+    new BrotliPlugin({
+      asset: "[path].br[query]",
+      test: /\.(js|css|svg|aff|md|json|ttf)$/,
+      threshold: 1024,
+      minRatio: 0.9
+    })
   ],
 
   entry: {
