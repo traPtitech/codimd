@@ -468,13 +468,31 @@ notes.on('updated', e => {
   }
 })
 
-$('.ui-refresh-notes').click(() => {
-  $.get(`${serverurl}/notes`).then(data => {
+function transformNotes (notes) {
+  return notes.map(item => {
+    item.fromNow = moment(item.timestamp).fromNow()
+    item.time = moment(item.timestamp).format('YYYY/MM/DD(ddd) HH:mm:ss')
+    return item
+  })
+}
+
+const refreshNotes = $('.ui-refresh-notes')
+let fetching = false
+
+refreshNotes.click(() => {
+  if (fetching) return
+
+  fetching = true
+  refreshNotes.css('opacity', '0.5')
+
+  $.get(`${serverurl}/notes?limit=50`).then(data => {
     notes.clear()
-    notes.add(data.notes.map(item => {
-      item.fromNow = moment(item.timestamp).fromNow()
-      item.time = moment(item.timestamp).format('YYYY/MM/DD(ddd) HH:mm:ss')
-      return item
-    }))
+    notes.add(transformNotes(data.notes))
+    return $.get(`${serverurl}/notes?offset=50`)
+  }).then(data => {
+    notes.add(transformNotes(data.notes))
+
+    fetching = false
+    refreshNotes.css('opacity', '1')
   })
 }).click()
