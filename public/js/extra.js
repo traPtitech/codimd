@@ -33,6 +33,8 @@ import markdownitContainer from 'markdown-it-container'
 /* Defined regex markdown it plugins */
 import Plugin from 'markdown-it-regexp'
 
+import { stampCssPlugin } from '@traptitech/traq-markdown-it'
+
 require('katex/dist/katex.css')
 require('prismjs/themes/prism.css')
 require('prismjs/components/prism-wiki')
@@ -1347,19 +1349,6 @@ const pdfPlugin = new Plugin(
   }
 )
 
-const emojijsPlugin = new Plugin(
-  // regexp to match emoji shortcodes :something:
-  // We generate an universal regex that guaranteed only contains the
-  // emojies we have available. This should prevent all false-positives
-  new RegExp(':(' + window.emojify.emojiNames.map((item) => { return RegExp.escape(item) }).join('|') + '):', 'i'),
-
-  (match, utils) => {
-    const emoji = match[1].toLowerCase()
-    const div = $(`<img class="emoji" alt=":${emoji}:" src="${emojifyImageDir}/${emoji}.png"></img>`)
-    return div[0].outerHTML
-  }
-)
-
 // yaml meta, from https://github.com/eugeneware/remarkable-meta
 function get (state, line) {
   const pos = state.bMarks[line]
@@ -1404,7 +1393,6 @@ function metaPlugin (md) {
 }
 
 md.use(metaPlugin)
-md.use(emojijsPlugin)
 md.use(youtubePlugin)
 md.use(vimeoPlugin)
 md.use(gistPlugin)
@@ -1412,6 +1400,16 @@ md.use(tocPlugin)
 md.use(slidesharePlugin)
 md.use(speakerdeckPlugin)
 md.use(pdfPlugin)
+
+window.___emojis = JSON.parse(localStorage.emojis || '[]')
+fetch('https://q.trap.jp/api/1.0/public/emoji.json').then(resp => resp.json()).then(data => {
+  window.___emojis = Object.keys(data)
+    .map(key => data[key])
+    .reduce((a, b) => a.concat(b), [])
+  localStorage.emojis = JSON.stringify(window.___emojis)
+})
+stampCssPlugin(md, window.___emojis)
+
 
 export default {
   md

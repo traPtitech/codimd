@@ -3169,17 +3169,17 @@ const textCompleteKeyMap = {
 $(editor.getInputField())
   .textcomplete([
     { // emoji strategy
-      match: /(^|\n|\s)\B:([-+\w]*)$/,
+      match: /(^|\n|\s)\B:([a-zA-Z0-9+_-]{1,32}[\w+-.]*)$/,
       search: function (term, callback) {
         var line = editor.getLine(editor.getCursor().line)
         term = line.match(this.match)[2]
         var list = []
-        $.map(window.emojify.emojiNames, function (emoji) {
+        $.map(window.___emojis, function (emoji) {
           if (emoji.indexOf(term) === 0) { // match at first character
             list.push(emoji)
           }
         })
-        $.map(window.emojify.emojiNames, function (emoji) {
+        $.map(window.___emojis, function (emoji) {
           if (emoji.indexOf(term) !== -1) { // match inside the word
             list.push(emoji)
           }
@@ -3187,7 +3187,7 @@ $(editor.getInputField())
         callback(list)
       },
       template: function (value) {
-        return `<img class="emoji" src="${emojifyImageDir}/${value}.png"></img> ${value}`
+        return `<i class="emoji s24 e_${value.replace(/\+/g, '_-plus-_')}" title=":${value}:">:${value}:</i> ${value}`
       },
       replace: function (value) {
         return '$1:' + value + ': '
