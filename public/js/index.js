@@ -3356,3 +3356,14 @@ $(editor.getInputField())
       editor.removeKeyMap(textCompleteKeyMap)
     }
   })
+
+// traQ Widgetの自動リサイズ
+window.addEventListener('message', event => {
+  if (event.origin !== 'https://q.trap.jp') return
+  if (!Array.isArray(event.data) || event.data.length < 2) return
+  const [href, height] = event.data
+  const $iframes = document.querySelectorAll(`iframe[src="${href}"]`)
+  $iframes.forEach($iframe => {
+    $iframe.height = height
+  })
+})
