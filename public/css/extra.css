@@ -400,3 +400,7 @@ small .dropdown a:focus, small .dropdown a:hover {
 .katex-mathml {
     display: none;
 }
+
+.markdown-body iframe[src*='trap.jp'] {
+    max-width: 100%;
+}
