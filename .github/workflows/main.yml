@@ -21,9 +21,19 @@ jobs:
         run: echo "IMAGE_TAG=latest" >> $GITHUB_ENV
         if: github.ref == 'refs/heads/traP'
       - uses: actions/checkout@v2
-      - name: Login GitHub Registry
-        run: docker login docker.pkg.github.com -u traPtitech -p ${{ secrets.GITHUB_TOKEN }}
-      - name: Build Image
-        run: docker build --build-arg RUNTIME=hackmdio/runtime:node-10-cjk-d27854ef -t docker.pkg.github.com/traptitech/codimd/${IMAGE_NAME}:${IMAGE_TAG} -f deployments/Dockerfile .
-      - name: Push image to GitHub Registry
-        run: docker push docker.pkg.github.com/traptitech/codimd/${IMAGE_NAME}:${IMAGE_TAG}
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: traptitech
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./deployments/Dockerfile
+          push: true
+          build-args: |
+            RUNTIME=hackmdio/runtime:node-10-cjk-d27854ef
+          tags: |
+            ghcr.io/traptitech/codimd:${{ env.IMAGE_TAG }}
