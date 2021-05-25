@@ -36,4 +36,4 @@ jobs:
           build-args: |
             RUNTIME=hackmdio/runtime:node-10-cjk-d27854ef
           tags: |
-            ghcr.io/traptitech/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+            ghcr.io/traptitech/codimd:${{ env.IMAGE_TAG }}
