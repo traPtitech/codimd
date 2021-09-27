@@ -81,6 +81,8 @@ import { emojifyImageDir } from './lib/editor/constants'
 import modeType from './lib/modeType'
 import appState from './lib/appState'
 
+import * as utils from './lib/editor/utils'
+
 require('../vendor/showup/showup')
 
 require('../css/index.css')
@@ -3384,4 +3386,12 @@ window.addEventListener('message', event => {
   $iframes.forEach($iframe => {
     $iframe.height = height
   })
+})
+
+// Ctrl+Iでのアイコン挿入
+editor.addKeyMap({
+  'Ctrl-I': cm => {
+    const userStamp = `:@${personalInfo.name}:`
+    utils.insertText(cm, userStamp, userStamp.length)
+  }
 })
