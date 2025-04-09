@@ -10,7 +10,7 @@ DOMPurify.addHook('uponSanitizeElement', function (node, data) {
     var src = node.getAttribute('src') || ''
     try {
       var url = new URL(src)
-      if (!url.hostname.endsWith('trap.jp')) {
+      if (!url.hostname.endsWith('trap.jp') || !url.hostname.endsWith('trapti.tech')) {
         return node.remove()
       }
     } catch (e) {

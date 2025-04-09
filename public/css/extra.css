@@ -471,6 +471,7 @@ small .dropdown a:focus, small .dropdown a:hover {
     display: none;
 }
 
-.markdown-body iframe[src*='trap.jp'] {
+.markdown-body iframe[src*='trap.jp'],
+.markdown-body iframe[src*='trapti.tech'] {
     max-width: 100%;
 }
