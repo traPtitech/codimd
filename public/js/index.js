@@ -3379,8 +3379,7 @@ $(editor.getInputField())
 
 // traQ Widgetの自動リサイズ
 window.addEventListener('message', event => {
-  if (event.origin !== 'https://q.trap.jp') return
-  if (event.origin !== 'https://q-dev.trapti.tech') return
+  if (event.origin !== 'https://q.trap.jp' && event.origin !== 'https://q-dev.trapti.tech') return
   if (!Array.isArray(event.data) || event.data.length < 2) return
   const [href, height] = event.data
   const $iframes = document.querySelectorAll(`iframe[src="${href}"]`)
