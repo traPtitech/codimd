@@ -1,7 +1,7 @@
 version: "3"
 services:
   database:
-    image: postgres:11.6-alpine
+    image: postgres:11.6-alpine@sha256:c132d7802dcc127486a403fb9e9a52d9df2e3ab84037c5de8395ed6ba2743e20
     environment:
       - POSTGRES_USER=codimd
       - POSTGRES_PASSWORD=change_password
