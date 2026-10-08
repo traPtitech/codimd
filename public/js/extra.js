@@ -1467,7 +1467,6 @@ fetch('https://q.trap.jp/api/1.0/public/emoji.json').then(resp => resp.json()).t
 })
 stampCssPlugin(md, window.___emojis)
 
-
 export default {
   md
 }

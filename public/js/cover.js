@@ -461,7 +461,7 @@ const notes = new List('notes', {
 })
 
 notes.on('updated', e => {
-  for (let item of e.items) {
+  for (const item of e.items) {
     if (item.visible()) {
       $(item.elm).find('a').attr('href', `${serverurl}/${item._values.id}`)
     }
