@@ -53,7 +53,7 @@ jobs:
         check-latest: true
     - name: Install doctoc-check
       run: |
-        npm install -g doctoc
+        npm install -g doctoc@1.4.0
         cp README.md README.md.orig
         npm run doctoc
         diff -q README.md README.md.orig
