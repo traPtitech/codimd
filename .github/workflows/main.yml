@@ -34,7 +34,8 @@ jobs:
           file: ./deployments/Dockerfile
           push: true
           build-args: |
-            RUNTIME=hackmdio/runtime:node-10-cjk-d27854ef
+            RUNTIME=hackmdio/runtime:16.20.2-35fe7e39
+            BUILDPACK=hackmdio/buildpack:16.20.2-35fe7e39
           tags: |
             ghcr.io/traptitech/codimd:${{ env.IMAGE_TAG }}
   deploy-staging:
