@@ -59,7 +59,7 @@ export function clearDuplicatedHistory (notehistory) {
       const newId = newnotehistory[j].id.replace(/=+$/, '')
       if (id === newId || notehistory[i].id === newnotehistory[j].id || !notehistory[i].id || !newnotehistory[j].id) {
         const time = (typeof notehistory[i].time === 'number' ? moment(notehistory[i].time) : moment(notehistory[i].time, 'MMMM Do YYYY, h:mm:ss a'))
-        const newTime = (typeof newnotehistory[i].time === 'number' ? moment(newnotehistory[i].time) : moment(newnotehistory[i].time, 'MMMM Do YYYY, h:mm:ss a'))
+        const newTime = (typeof newnotehistory[j].time === 'number' ? moment(newnotehistory[j].time) : moment(newnotehistory[j].time, 'MMMM Do YYYY, h:mm:ss a'))
         if (time >= newTime) {
           newnotehistory[j] = notehistory[i]
         }
@@ -181,7 +181,7 @@ export function getStorageHistory (callback) {
   let data = store.get('notehistory')
   if (data) {
     if (typeof data === 'string') { data = JSON.parse(data) }
-    callback(data)
+    return callback(data)
   }
   // eslint-disable-next-line standard/no-callback-literal
   callback([])

@@ -90,7 +90,7 @@ function pageInit () {
   )
 }
 
-$('.masthead-nav li').click(function () {
+$('.masthead-nav > li').click(function () {
   $(this).siblings().removeClass('active')
   $(this).addClass('active')
 })
@@ -461,7 +461,7 @@ const notes = new List('notes', {
 })
 
 notes.on('updated', e => {
-  for (let item of e.items) {
+  for (const item of e.items) {
     if (item.visible()) {
       $(item.elm).find('a').attr('href', `${serverurl}/${item._values.id}`)
     }
@@ -496,3 +496,6 @@ refreshNotes.click(() => {
     refreshNotes.css('opacity', '1')
   })
 }).click()
+$('.ui-export-user-data').click(function (e) {
+  document.exportNoteData.submit()
+})

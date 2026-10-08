@@ -6,12 +6,18 @@ on:
       - traP
       - traP-*
 
+permissions:
+  contents: read
+
 env:
   IMAGE_NAME: codimd
 
 jobs:
   image:
     name: Build Docker Image
+    permissions:
+      contents: read
+      packages: write
     runs-on: ubuntu-latest
     steps:
       - name: Set IMAGE_TAG env (non traP branch)
@@ -20,21 +26,22 @@ jobs:
       - name: Set IMAGE_TAG env (traP branch)
         run: echo "IMAGE_TAG=latest" >> $GITHUB_ENV
         if: github.ref == 'refs/heads/traP'
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7 # v1
         with:
           registry: ghcr.io
           username: traptitech
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and push
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@ac9327eae2b366085ac7f6a2d02df8aa8ead720a # v2
         with:
           context: .
           file: ./deployments/Dockerfile
           push: true
           build-args: |
-            RUNTIME=hackmdio/runtime:node-10-cjk-d27854ef
+            RUNTIME=hackmdio/runtime:16.20.2-35fe7e39
+            BUILDPACK=hackmdio/buildpack:16.20.2-35fe7e39
           tags: |
             ghcr.io/traptitech/codimd:${{ env.IMAGE_TAG }}
   deploy-staging:
@@ -43,7 +50,7 @@ jobs:
     needs: [image]
     steps:
       - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
+        uses: shimataro/ssh-key-action@87a8f067114a8ce263df83e9ed5c849953548bc3 # v2
         with:
           key: ${{ secrets.STAGING_SSH_KEY }}
           known_hosts: ${{ secrets.STAGING_KNOWN_HOSTS }}

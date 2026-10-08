@@ -21,8 +21,8 @@ DOMPurify.addHook('uponSanitizeElement', function (node, data) {
 
 function preventXSS (html) {
   return DOMPurify.sanitize(html, {
-    ADD_TAGS: ["iframe"],
-    ADD_ATTR: ["scrolling", "frameborder", "allow"]
+    ADD_TAGS: ['iframe'],
+    ADD_ATTR: ['scrolling', 'frameborder', 'allow']
   })
 }
 window.preventXSS = preventXSS
