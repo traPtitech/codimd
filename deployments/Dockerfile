@@ -20,6 +20,10 @@ FROM $RUNTIME
 USER hackmd
 WORKDIR /home/hackmd/app
 COPY --chown=1500:1500 --from=BUILD /home/hackmd/app .
+# Node.js 10 の組み込み CA と runtime イメージの OS の CA ストアはどちらも GlobalSign Root R46 を含まず、
+# この CA で発行された ConoHa の証明書を検証できない
+COPY deployments/certs/GlobalSign_Root_R46.pem /usr/local/share/ca-certificates/GlobalSign_Root_R46.pem
+ENV NODE_EXTRA_CA_CERTS=/usr/local/share/ca-certificates/GlobalSign_Root_R46.pem
 RUN npm install --production && npm cache clean --force && rm -rf /tmp/{core-js-banners,phantomjs}
 EXPOSE 3000
 ENTRYPOINT ["/home/hackmd/app/docker-entrypoint.sh"]
