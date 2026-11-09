@@ -1,0 +1,105 @@
+name: Publish release image
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "CodiMD release version (X.Y.Z-N)"
+        required: true
+        type: string
+
+concurrency:
+  group: codimd-publish-release-image
+  queue: max
+
+permissions: {}
+
+env:
+  IMAGE: ghcr.io/traptitech/codimd
+  # Renovate compares the numeric components using JavaScript numbers.
+  VERSION_PATTERN: '^(0|[1-9][0-9]{0,14})\.(0|[1-9][0-9]{0,14})\.(0|[1-9][0-9]{0,14})-[1-9][0-9]{0,14}$'
+  VERSION: ${{ inputs.version }}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check release branch
+        run: |
+          if [[ "$GITHUB_REF" != refs/heads/traP ]]; then
+            echo "::error::Run this workflow on the traP branch. Selected ref: $GITHUB_REF."
+            exit 1
+          fi
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Check release version
+        run: |
+          if [[ ! "$VERSION" =~ $VERSION_PATTERN ]]; then
+            echo "::error::Enter a release version in X.Y.Z-N format, with a positive release number and at most 15 digits per component."
+            exit 1
+          fi
+          package_version=$(jq -er '.version | strings' package.json)
+          if [[ "${VERSION%-*}" != "$package_version" ]]; then
+            echo "::error::Release version $VERSION must start with the package.json version $package_version."
+            exit 1
+          fi
+      - name: Install crane
+        run: |
+          archive="$RUNNER_TEMP/go-containerregistry.tar.gz"
+          curl --fail --silent --show-error --location --output "$archive" \
+            https://github.com/google/go-containerregistry/releases/download/v0.22.1/go-containerregistry_Linux_x86_64.tar.gz
+          printf '%s  %s\n' 0ab7a1d6932a213aed964ce97666c3077fe691c8606413674a8b3e0b9ec4cda0 "$archive" | sha256sum --check
+          tar -xzf "$archive" -C "$RUNNER_TEMP" crane
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: traptitech
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check previously published releases
+        run: |
+          if ! tags=$(crane ls "$IMAGE"); then
+            echo "::error::Could not list tags for $IMAGE. Check access to GHCR before retrying."
+            exit 1
+          fi
+          latest=$(printf '%s\n' "$tags" | sed -nE "/$VERSION_PATTERN/p" | LC_ALL=C sort -V | tail -n 1)
+          newest=$(printf '%s\n' "$latest" "$VERSION" | LC_ALL=C sort -V | tail -n 1)
+          if [[ "$newest" == "$latest" ]]; then
+            echo "::error::Release $VERSION must be newer than the latest published release $latest."
+            exit 1
+          fi
+      - name: Build and publish release image
+        id: build
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: ./deployments/Dockerfile
+          push: true
+          build-args: |
+            RUNTIME=hackmdio/runtime:node-10-cjk-d27854ef
+          labels: org.opencontainers.image.revision=${{ github.sha }}
+          tags: ${{ env.IMAGE }}:${{ env.VERSION }}
+      - name: Verify published image
+        env:
+          BUILD_DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          release="$IMAGE:$VERSION"
+          if ! digest=$(crane digest "$release"); then
+            echo "::error::Could not verify $release after publication. Check the tag in GHCR before retrying."
+            exit 1
+          fi
+          if [[ ! "$digest" =~ ^sha256:[0-9a-f]{64}$ || "$digest" != "$BUILD_DIGEST" ]]; then
+            echo "::error::Digest mismatch for $release. The build reported ${BUILD_DIGEST:-no digest}," \
+              "but GHCR returned $digest. Check which run published the tag."
+            exit 1
+          fi
+          printf 'Release: %s\n\nCommit: %s\n\nImage: %s@%s\n' \
+            "$VERSION" "$GITHUB_SHA" "$release" "$digest" >> "$GITHUB_STEP_SUMMARY"
